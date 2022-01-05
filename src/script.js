@@ -5,6 +5,7 @@ import * as dat from 'lil-gui'
 import {FontLoader} from 'three/examples/jsm/loaders/FontLoader'
 import {TextGeometry} from 'three/examples/jsm/geometries/TextGeometry'
 import { Vector3 } from 'three'
+// import {MeshWobbleMaterial} from 'drei';
 
 /**
  * Base
@@ -28,27 +29,35 @@ scene.add(axesHelper)
 const textureLoader = new THREE.TextureLoader()
 
 const fontLoader = new FontLoader();
+const fontConfig = {
+    size: 0.5,
+    height: 0.1,
+    curveSegments: 32,
+    bevelEnabled: true,
+    bevelThickness: 0.01,
+    bevelSize: 0.005,
+    bevelOffset: 0,
+    bevelSegments: 3
+}
 fontLoader.load(
     '/fonts/gotham.json',
     (font) => {
-        const textGeometry = new TextGeometry(
+        const textGeometry1 = new TextGeometry(
             'MAREK',
-            {
-                font: font,
-                size: 0.5,
-                height: 0.2,
-                curveSegments: 12,
-                bevelEnabled: true,
-                bevelThickness: 0.03,
-                bevelSize: 0.02,
-                bevelOffset: 0,
-                bevelSegments: 12
-            }
+            {font: font,
+                ...fontConfig}
+        )
+        const textGeometry2 = new TextGeometry(
+            'SUCHANSKI',
+            {font: font,
+                ...fontConfig}
         )
         // Bounding box
-        textGeometry.computeBoundingBox();
+        textGeometry1.computeBoundingBox();
+        textGeometry2.computeBoundingBox();
     
-        const boxCenter = textGeometry.boundingBox.max.sub(textGeometry.boundingBox.min).multiply(new Vector3(0.5,0.5,0.5));
+        const boxCenter1 = textGeometry1.boundingBox.max.sub(textGeometry1.boundingBox.min).multiply(new Vector3(0.5,0.5,0.5));
+        const boxCenter2 = textGeometry2.boundingBox.max.sub(textGeometry2.boundingBox.min).multiply(new Vector3(0.5,0.5,0.5));
         const matCapTextures = 
         [
             textureLoader.load('/textures/matcaps/1.png'),
@@ -63,16 +72,21 @@ fontLoader.load(
 
         // text material
         const textMaterial = new THREE.MeshMatcapMaterial()
-        textMaterial.matcap = matCapTextures[0];
+        textMaterial.matcap = matCapTextures[6];
 
         gui.add(textMaterial, 'matcap', matCapTextures)
         // text mesh
-        const text = new THREE.Mesh(
-            textGeometry, textMaterial
+        const text1 = new THREE.Mesh(
+            textGeometry1, textMaterial
+        );
+        const text2 = new THREE.Mesh(
+            textGeometry2, textMaterial
         );
         // center text on scene
-        text.position.sub(boxCenter)
-        scene.add(text);
+        text1.position.sub(boxCenter1)
+        text2.position.sub(boxCenter2)
+        text2.position.y -= 0.6;
+        scene.add(text1, text2);
     }
 )
 
