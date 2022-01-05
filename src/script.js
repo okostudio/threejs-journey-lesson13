@@ -68,11 +68,12 @@ fontLoader.load(
             textureLoader.load('/textures/matcaps/6.png'),
             textureLoader.load('/textures/matcaps/7.png'),
             textureLoader.load('/textures/matcaps/8.png'),
+            textureLoader.load('/textures/matcaps/9.png'),
         ]
 
         // text material
         const textMaterial = new THREE.MeshMatcapMaterial()
-        textMaterial.matcap = matCapTextures[6];
+        textMaterial.matcap = matCapTextures[5];
 
         gui.add(textMaterial, 'matcap', matCapTextures)
         // text mesh
@@ -118,9 +119,9 @@ window.addEventListener('resize', () =>
  */
 // Base camera
 const camera = new THREE.PerspectiveCamera(75, sizes.width / sizes.height, 0.1, 100)
-camera.position.x = 1
-camera.position.y = 1
-camera.position.z = 2
+camera.position.x = 0
+camera.position.y = -3
+camera.position.z = 4
 scene.add(camera)
 
 // Controls
@@ -131,10 +132,13 @@ controls.enableDamping = true
  * Renderer
  */
 const renderer = new THREE.WebGLRenderer({
-    canvas: canvas
+    canvas: canvas,
+    alpha: true,
+    antialias: true
 })
 renderer.setSize(sizes.width, sizes.height)
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
+renderer.setClearColor( 0xFF0000, 0 ); // the default
 
 /**
  * Animate
